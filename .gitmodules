@@ -1,0 +1,9 @@
+[submodule "docker-environment"]
+	path = docker-environment
+	url = https://github.com/tristanvdb/rose-docker-environment.git
+[submodule "apps"]
+	path = apps
+	url = https://github.com/tristanvdb/rose-dockerized-apps.git
+[submodule "compdb"]
+	path = compdb
+	url = https://github.com/tristanvdb/compilation-database.git

@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+set +x
+
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+  echo "This script should be sourced (with \`.\` or \`source\`)."
+  exit
+fi
+
+export RD_WORKSPACE=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
+
+# Personalization
+
+export optsdir=$RD_WORKSPACE/.opts
+export rscdir=$RD_WORKSPACE/.rsc
+export tcdir=$RD_WORKSPACE/.tc
+export rd_tmpdir=$RD_WORKSPACE/.tmp
+export archdir=$RD_WORKSPACE/.arch
+
+# Add additionnal submodules
+
+extradockeropts="$extradockeropts"
+[ -d $RD_WORKSPACE/compdb ]  && extradockeropts="$extradockeropts -v $RD_WORKSPACE/compdb:/opt/compdb"
+export extradockeropts
+
+# Load environments
+
+source $RD_WORKSPACE/docker-environment/init.rc
+
