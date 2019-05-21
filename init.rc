@@ -14,8 +14,10 @@ export RD_WORKSPACE=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
 export optsdir=$RD_WORKSPACE/.opts
 export rscdir=$RD_WORKSPACE/.rsc
 export tcdir=$RD_WORKSPACE/.tc
+export wspcdir=$RD_WORKSPACE/.wspc
 export rd_tmpdir=$RD_WORKSPACE/.tmp
 export archdir=$RD_WORKSPACE/.arch
+export licsdir=$RD_WORKSPACE/.lic
 
 # Add additionnal submodules
 
