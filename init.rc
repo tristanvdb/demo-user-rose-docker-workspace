@@ -19,6 +19,8 @@ export rd_tmpdir=$RD_WORKSPACE/.tmp
 export archdir=$RD_WORKSPACE/.arch
 export licsdir=$RD_WORKSPACE/.lic
 
+appsdir=$RD_WORKSPACE/apps
+
 # Add additionnal submodules
 
 extradockeropts="$extradockeropts"

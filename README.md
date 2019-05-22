@@ -157,7 +157,75 @@ We will focus on using ROSE's plugins.
 
 TODO
 
-## Work with applications
+## Working with packaged applications
+
+Alongside the ROSE's Docker Environment, we provide tools to package applications.
+This packaging is done through a set of scripts provided as part of the [Dockerized Application Repository](https://github.com/tristanvdb/rose-dockerized-apps).
+
+One particularity of this packaging is the extraction of the JSON Compilation Database while compiling it.
+This compilatation Database is extracted using the tool [Bear](https://github.com/rizsotto/Bear).
+
+We use a tool provided alongside the ROSE's Docker Environment (as a submodule of this demo workspace).
+This tool, CompDB, is a python module helping to work with JSON Compilation Database.
+During the packaging, we use `compdb-norm` to normalize the database and extract some information about the source organization.
+The result is stored in a JSON format.
+
+You can try it with BusyBox 1.30.1 on Ubuntu 18.04 with native toolchain and the latest release of ROSE by configuring:
+```
+export distrib_name=ubuntu distrib_version=18.04 toolchain=native
+export rose_version=$(rd-last release) rose_build=release
+export app_name=busybox app_version=1.30.1
+```
+
+### Packing
+
+The packing stage construct the application independently of ROSE by:
+ - Pulling the toolchain image with additional packages
+ - Building dependencies in a container of this image inside the `/opt` directory
+ - Building the application in the container with installed dependencies inside the `/workspace` directory
+ - Archives the install tree of the dependencies and source/build/install trees of the application
+```
+rd-pack
+```
+
+### Unpacking
+
+The unpacking the application on ROSE image by:
+ - Pulling the ROSE image with additional packages
+ - Extracting the  install tree for each dependency
+ - Extracting the source/build/install trees of the application
+```
+rd-unpack
+```
+
+### Apply ROSE
+
+
+
+We start with a map operation which applies `rose-cc` in parallel to all the captured translation units.
+This operation generates a JSON reports.
+Note that `$nprocs` is set by `init.rc` to your number of cores.
+You might to reduce it for some application.
+```
+image_level=rose rd-run \
+    compdb-map --compdb-record /workspace/$app_name/$app_version/compdb.json \
+               --compdb-output /workspace/$app_name/$app_version/compdb-rose.json \
+               --tool rose-cc --nprocs $nprocs
+```
+
+You can generate a HTML report from the generated JSON report.
+You can provide a title but **must** provide a path for the static ressources (JS and CSS).
+```
+image_level=rose rd-run \
+    compdb-render --compdb-record /workspace/$app_name/$app_version/compdb-rose.json \
+                  --output-basename /workspace/$app_name/$app_version/compdb-rose \
+                  --title "$app_name - $app_version" --static $RD_WORKSPACE/compdb/static
+```
+
+The HTML report is found at `$wspcdir/$distrib_name/$distrib_version/$toolchain/$app_name/$app_version/compdb-rose.html`.
+You can also find the various reports and the source/build/install trees of the application in that directory.
+
+### Apply a plugin
 
 TODO
 
